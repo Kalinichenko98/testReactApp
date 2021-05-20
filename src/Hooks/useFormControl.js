@@ -3,8 +3,14 @@ import {useState} from "react";
 export const useFormControl = (options)=>{
     let [data, setData] = useState(options?.initialValues || {})
     let [errors, setErrors] = useState({})
-    let handleChange = (fieldName) => (e) => {
-        setData({...data, [fieldName]: e.target.value})
+    let handleChange = (fieldName, type = 'input') => (e) => {
+        switch (type) {
+            case 'checkbox':
+                setData({...data, [fieldName]: e.target.checked})
+                break
+            default:
+                setData({...data, [fieldName]: e.target.value})
+        }
         setErrors({})
     }
     let handleSubmit = (e) => {

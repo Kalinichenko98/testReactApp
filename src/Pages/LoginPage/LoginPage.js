@@ -4,17 +4,28 @@ import {useFormControl} from "../../Hooks/useFormControl";
 import {authenticateUser} from "../../Core/sdk";
 import {useState} from "react";
 import { useHistory } from "react-router-dom";
+import {userAuth} from "../../Redux/UserReducer";
+import {useDispatch} from "react-redux";
 
 export const LoginPage = (props) => {
     let [formError,setFormError] = useState('')
     let history = useHistory();
-    console.log(history)
+    let dispatch = useDispatch()
     let {data, handleChange, handleSubmit, errors} = useFormControl({
-        initialValues: {email: 'sds@mail.com', password: '1234',},
-        onSubmit: ({email,password}) => {
+        initialValues: {email: 'sds@mail.com', password: '1234',rememberMe:true,},
+        onSubmit: ({email,password,rememberMe}) => {
             authenticateUser(email,password).then((response) => response.json())
-                .then(v=>{history.push('/main')}).catch(e=>setFormError(e.statusText))
-
+                .then(v=>{
+                    if (rememberMe){
+                        try {
+                            localStorage.token = v.token
+                        } catch (e) {
+                            console.log('Error')
+                        }
+                    }
+                    dispatch(userAuth(v))
+                    history.push('/main')
+                }).catch(e=>setFormError(e.statusText))
         },
         validation: {
             password: {
@@ -56,6 +67,12 @@ export const LoginPage = (props) => {
                         value={data.password || ''}
                         handleChange={handleChange('password')}
                         errors={errors.password || ''}
+                    />
+                    <input
+                        type="checkbox"
+                        name="rememberMe"
+                        defaultChecked={data.password || true}
+                        onChange={handleChange('rememberMe','checkbox')}
                     />
                     <div className='bottom'>
                         <button>Вход</button>
