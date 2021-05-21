@@ -1,8 +1,17 @@
-.MainPage{
+.header__main {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    color: white !important;
     align-items: center;
-    height:100vh;
-    flex-direction: column;
+}
+.content{
+    height: calc(100vh - 64px);
+}
+.cardLit{
+    display: flex;
+    margin-top: 20px;
 }
 
+.search{
+    padding: 20px;
+}

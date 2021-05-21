@@ -7,25 +7,29 @@ import { useHistory } from "react-router-dom";
 import {userAuth} from "../../Redux/UserReducer";
 import {useDispatch} from "react-redux";
 
-export const LoginPage = (props) => {
+export const LoginPage = () => {
     let [formError,setFormError] = useState('')
     let history = useHistory();
     let dispatch = useDispatch()
     let {data, handleChange, handleSubmit, errors} = useFormControl({
         initialValues: {email: 'sds@mail.com', password: '1234',rememberMe:true,},
-        onSubmit: ({email,password,rememberMe}) => {
-            authenticateUser(email,password).then((response) => response.json())
-                .then(v=>{
-                    if (rememberMe){
-                        try {
-                            localStorage.token = v.token
-                        } catch (e) {
-                            console.log('Error')
-                        }
+        onSubmit: async ({email,password,rememberMe}) => {
+            try {
+                let response = await  authenticateUser(email,password)
+                let data =  await response.json();
+                if (rememberMe){
+                    try {
+                        localStorage.token = data.token
+                    } catch (e) {
+                        console.log('Error')
                     }
-                    dispatch(userAuth(v))
-                    history.push('/main')
-                }).catch(e=>setFormError(e.statusText))
+                }
+                dispatch(userAuth(data))
+                history.push('/main')
+            } catch (e) {
+                let error =  await e.json();
+                setFormError(error.message)
+            }
         },
         validation: {
             password: {
@@ -78,7 +82,7 @@ export const LoginPage = (props) => {
                         <button>Вход</button>
                     </div>
                 </form>
-                <div style={{textAlign:'center'}}>{formError}</div>
+                <div style={{textAlign:'center',height:10}}>{formError || ''}</div>
             </div>
         </div>
     );
