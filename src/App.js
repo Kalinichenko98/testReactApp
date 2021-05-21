@@ -14,6 +14,9 @@ const App = ()=> {
     let history = useHistory()
     let dispatch = useDispatch()
     useEffect(()=>{
+        isAuth? history.push('/main') : history.push('/login')
+    },[isAuth])
+    useEffect(()=>{
         if (token) {
             validateToken(token).then(v=>{
                 if (v) {
@@ -30,9 +33,8 @@ const App = ()=> {
     <div>
         <Switch>
             <Route exact path={['/login']} component={LoginPage}/>
-            <Route exact path={['/main','/']} render={()=><MainPage token={token}/>}/>
+            <Route exact path={['/main','/']} render={()=><MainPage isAuth={isAuth}/>}/>
         </Switch>
-        {isAuth ? <Redirect to={'/main'}/> :  <Redirect to={'/login'}/> }
     </div>
   );
 }

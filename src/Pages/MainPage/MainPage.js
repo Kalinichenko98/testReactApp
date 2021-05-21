@@ -8,11 +8,11 @@ import {Button, Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import {useFilter} from "../../Hooks/useFilter";
 import {TicketCard} from "../../Components/TicketCard/TicketCard";
-import {string} from "prop-types";
+import {bool, string} from "prop-types";
 import {parse} from "date-fns";
 
 
-const MainPage = ({token}) => {
+const MainPage = ({isAuth}) => {
     let email = useSelector((state => state.user.email))
     //    TODO reselect
     let tickets = useSelector((state => state.user.tickets))
@@ -26,12 +26,12 @@ const MainPage = ({token}) => {
     let dispatch = useDispatch()
     useEffect(() => {
         let getData = async () => {
-            let response = await getFlights(token)
+            let response = await getFlights(localStorage.token)
             let data = await response.json()
             dispatch(getTickets(data.data))
         }
-        if (token) getData()
-    }, [token])
+        if (localStorage.token) getData()
+    }, [isAuth])
     let {sortedTickets,handleChange,value} = useFilter(sorted)
     let handleLogOut = ()=>{
         try {
@@ -65,7 +65,7 @@ const MainPage = ({token}) => {
 }
 
 MainPage.propTypes = {
-    token:string
+    isAuth:bool
 }
 
 export default MainPage
