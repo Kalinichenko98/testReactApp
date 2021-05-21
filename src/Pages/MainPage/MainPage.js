@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import {useEffect, useMemo} from "react";
 import {getFlights} from "../../Core/sdk";
-import {getTickets} from "../../Redux/UserReducer";
+import {getTickets, logOut} from "../../Redux/UserReducer";
 import {Button, Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import {useFilter} from "../../Hooks/useFilter";
@@ -33,12 +33,21 @@ const MainPage = ({token}) => {
         if (token) getData()
     }, [token])
     let {sortedTickets,handleChange,value} = useFilter(sorted)
+    let handleLogOut = ()=>{
+        try {
+            localStorage.token = ''
+            dispatch(logOut())
+        }
+        catch (e){
+            dispatch(logOut())
+        }
+    }
     return (
         <div>
             <Layout>
                 <Header className='header__main'>
                     <span>{email}</span>
-                    <Button type={'primary'}>Выход</Button>
+                    <Button onClick={handleLogOut} type={'primary'}>Выход</Button>
                 </Header>
                 <Content className='content'>
                    <div className="search">

@@ -1,6 +1,7 @@
 
 const USER_AUTHORIZES = 'user/USER_AUTHORIZES'
 const GET_TICKETS = 'user/GET_TICKETS'
+const LOG_OUT = 'user/LOG_OUT'
 let initialState = {
     isAuth: false,
     token: window.localStorage.token,
@@ -14,6 +15,8 @@ export const User = (state = initialState, action) => {
             return {...state, isAuth: true,email:action.payload.email,token: action.payload.token}
         case GET_TICKETS:
             return {...state, tickets: {...state.tickets,...action.payload.tickets}}
+        case LOG_OUT:
+            return {...state, isAuth: false, email: null, tickets: []}
     }
     return state
 }
@@ -22,6 +25,12 @@ export const userAuth = (data) => {
     return {
         type: USER_AUTHORIZES,
         payload:data
+    }
+}
+
+export const logOut = () => {
+    return {
+        type: LOG_OUT,
     }
 }
 
