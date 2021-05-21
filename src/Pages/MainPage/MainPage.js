@@ -16,6 +16,7 @@ const MainPage = ({isAuth}) => {
     let email = useSelector((state => state.user.email))
     //    TODO reselect
     let tickets = useSelector((state => state.user.tickets))
+    let token = useSelector((state => state.user.token))
     let sorted = useMemo(() => {
         return Object.values(tickets).sort((a, b) => {
             let aDate = parse(a.date, 'dd-MM-yyyy', new Date())
@@ -26,12 +27,12 @@ const MainPage = ({isAuth}) => {
     let dispatch = useDispatch()
     useEffect(() => {
         let getData = async () => {
-            let response = await getFlights(localStorage.token)
+            let response = await getFlights(localStorage.token || token)
             let data = await response.json()
             dispatch(getTickets(data.data))
         }
-        if (localStorage.token) getData()
-    }, [isAuth])
+        if (localStorage.token || token) getData()
+    }, [isAuth,token])
     let {sortedTickets,handleChange,value} = useFilter(sorted)
     let handleLogOut = ()=>{
         try {
