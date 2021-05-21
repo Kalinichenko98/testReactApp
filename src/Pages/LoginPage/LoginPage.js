@@ -12,7 +12,7 @@ export const LoginPage = () => {
     let history = useHistory();
     let dispatch = useDispatch()
     let {data, handleChange, handleSubmit, errors} = useFormControl({
-        initialValues: {email: 'sds@mail.com', password: '1234',rememberMe:true,},
+        initialValues: {email: '', password: '',rememberMe:true,},
         onSubmit: async ({email,password,rememberMe}) => {
             try {
                 let response = await  authenticateUser(email,password)
